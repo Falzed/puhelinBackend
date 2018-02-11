@@ -3,6 +3,10 @@ const app = express()
 const bodyParser = require('body-parser')
 const morgan = require('morgan')
 
+morgan.token('url', (req, res) => {
+    return JSON.stringify(req.body)
+})
+
 app.use(bodyParser.json())
 app.use(morgan('tiny'))
 
@@ -64,12 +68,13 @@ const generateId = () => {
 }
 
 const onkoJoLuettelossa = (name) => {
-    console.log(persons.find(person => person.name===name))
+    /* console.log(persons.find(person => person.name===name)) */
     return (persons.find(person => person.name===name)!==undefined)
 }
 
 app.post('/api/persons', (req, res) => {
     const body = req.body
+
 
     if(body.name===undefined) {
         return res.status(400).json({error: 'Name required'})
