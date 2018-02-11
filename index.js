@@ -61,6 +61,11 @@ const generateId = () => {
     return Math.floor(Math.random()*(Math.pow(2,32)-1))
 }
 
+const onkoJoLuettelossa = (name) => {
+    console.log(persons.find(person => person.name===name))
+    return (persons.find(person => person.name===name)!==undefined)
+}
+
 app.post('/api/persons', (req, res) => {
     const body = req.body
 
@@ -69,6 +74,9 @@ app.post('/api/persons', (req, res) => {
     }
     if(body.number===undefined) {
         return res.status(400).json({error: 'Number required'})
+    }
+    if(onkoJoLuettelossa(body.name)) {
+        return res.status(400).json({error: 'Name must be unique'})
     }
     const person = {
         name: body.name,
