@@ -1,0 +1,7 @@
+POST https://secret-refuge-20588.herokuapp.com/api/persons
+Content-Type: application/json
+
+{
+    "name": "Testihenkilö 1",
+    "number": "123-123123"
+}
