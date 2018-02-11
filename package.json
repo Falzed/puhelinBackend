@@ -1,0 +1,27 @@
+{
+  "name": "puhelinbackend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \\\"Error: no test specified\\\" && exit 1",
+    "watch": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Falzed/puhelinBackend.git"
+  },
+  "author": "Oskari Kulmala",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Falzed/puhelinBackend/issues"
+  },
+  "homepage": "https://github.com/Falzed/puhelinBackend#readme",
+  "dependencies": {
+    "express": "^4.16.2"
+  },
+  "devDependencies": {
+    "nodemon": "^1.14.12"
+  }
+}
