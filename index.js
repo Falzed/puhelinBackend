@@ -42,9 +42,9 @@ app.get('/info', (req, res) => {
 
 app.get('/api/persons/:id', (req, res) => {
     const id = Number(req.params.id)
-    const person = persons.find(person => person.id===id)
+    const person = persons.find(person => person.id === id)
 
-    if(person) {
+    if (person) {
         res.json(person)
     } else {
         res.status(404).end()
@@ -53,8 +53,31 @@ app.get('/api/persons/:id', (req, res) => {
 
 app.delete('/api/persons/:id', (req, res) => {
     const id = Number(req.params.id)
-    persons = persons.filter(person=> person.id!==id)
+    persons = persons.filter(person => person.id !== id)
     res.status(204).end()
+})
+
+const generateId = () => {
+    return Math.floor(Math.random()*(Math.pow(2,32)-1))
+}
+
+app.post('/api/persons', (req, res) => {
+    const body = req.body
+
+    if(body.name===undefined) {
+        return res.status(400).json({error: 'Name required'})
+    }
+    if(body.number===undefined) {
+        return res.status(400).json({error: 'Number required'})
+    }
+    const person = {
+        name: body.name,
+        number: body.number,
+        id: generateId()
+    }
+    persons = persons.concat(person)
+
+    res.json(person)
 })
 
 const PORT = 3001
