@@ -48,7 +48,7 @@ const formatPerson = (person) => {
 app.get('/api/persons', (req, res) => {
     Person.find({})    
     .then(result => {
-        res.json(result.map(formatPerson))
+        res.json(result.map(Person.format))
     })    
 })
 
