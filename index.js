@@ -60,7 +60,9 @@ app.get('/info', (req, res) => {
         <p>Puhelinluettelossa on ${result.length} henkilön tiedot</p>
         ${paivays}
         </div>`)
-    })    
+    }).catch(error => {
+        console.log(error)
+    })
 })
 
 app.get('/api/persons/:id', (req, res) => {
@@ -110,6 +112,9 @@ app.post('/api/persons', (req, res) => {
     person.save()
         .then(result => {
             console.log(`lisätään luetteloon henkilö ${person.name} numerolla ${person.number}`)
+        })
+        .catch(error => {
+            console.log(error)
         })
 
     res.json(person)
