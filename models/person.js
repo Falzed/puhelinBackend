@@ -8,6 +8,15 @@ const username = fs.readFileSync('username.config').toString().replace('\n', '')
 const url =
     "mongodb://".concat(username).concat(":").concat(password)
     .concat("@ds129428.mlab.com:29428/fs-3-db") */
+
+
+if (process.env.NODE_ENV !== 'production') {
+    console.log('Not production')
+    require('dotenv').config()
+} else {
+    console.log('Production')
+}
+
 const url = process.env.MONGODB_URI
 mongoose.connect(url)
 
@@ -18,7 +27,7 @@ const personSchema = new Schema({
     number: String
 })
 
-personSchema.statics.format = function(person) {
+personSchema.statics.format = function (person) {
     return {
         name: person.name,
         number: person.number,
@@ -27,7 +36,7 @@ personSchema.statics.format = function(person) {
 }
 
 
-const Person=mongoose.model('Person', personSchema)
+const Person = mongoose.model('Person', personSchema)
 
 
 

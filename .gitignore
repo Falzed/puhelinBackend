@@ -1,1 +1,4 @@
 node_modules
+password.config
+username.config
+.env
