@@ -18,7 +18,6 @@ const personSchema = new Schema({
 })
 
 personSchema.statics.format = function(person) {
-    console.log("format kutsuttu")
     return {
         name: person.name,
         number: person.number,
