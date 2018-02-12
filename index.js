@@ -5,13 +5,13 @@ const morgan = require('morgan')
 const cors = require('cors')
 const Person = require('./models/person')
 
-morgan.token('url', (req, res) => {
+morgan.token('url', (req) => {
     return JSON.stringify(req.body)
 })
 
 app.use(bodyParser.json())
 app.use(morgan('tiny'))
-/* app.use(cors) */
+app.use(cors())
 app.use(express.static('build'))
 
 /*let persons = [
@@ -82,7 +82,7 @@ app.get('/api/persons/:id', (req, res) => {
 app.delete('/api/persons/:id', (req, res) => {
 
     Person.findByIdAndRemove(req.params.id)
-        .then(result => {
+        .then(() => {
             res.status(204).end()
         })
         .catch(error => {
@@ -110,14 +110,18 @@ app.delete('/api/persons/:id', (req, res) => {
 } */
 
 app.put('/api/persons/:id', (req, res) => {
-    Person.findOneAndUpdate({ name: body.name }, person,
-        { number: person.number })
+    const person = {
+        name: req.body.name,
+        number: req.body.number
+    }
+    console.log(person)
+    Person
+        .findOneAndUpdate({ name: req.body.name }, person,
+            { number: person.number })
         .then(() => {
-            console.log('findOneAndUpdate.then')
             res.status(200).end()
         })
         .catch(error => {
-            console.log(asdf)
             console.log(error)
         })
 })
