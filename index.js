@@ -117,6 +117,11 @@ const generateId = () => {
     })  
 } 
 
+app.put('/api/persons/:id', (req,res) => {
+    Person.findOneAndUpdate({name: body.name}, person,
+        {number: person.number})
+})
+
 app.post('/api/persons', (req, res) => {
     const body = req.body
 
@@ -131,20 +136,28 @@ app.post('/api/persons', (req, res) => {
     if(body.number===undefined) {
         return res.status(400).json({error: 'Number required'})
     }
-    if(onkoJoLuettelossa(body.name)) {
-        Person.findOneAndUpdate({name: body.name}, person,
-             {number: person.number})
-    } else {
-        person.save()
-        .then(result => {
-            console.log(`lisätään luetteloon henkilö ${person.name} numerolla ${person.number}`)
-        })
-        .catch(error => {
-            console.log(error)
-        })
 
-        res.json(person)
-    }       
+    Person
+        .find({name: body.name})
+        .then(result => {
+            console.log(result.length)
+            console.log(result.length===0)
+            if(result.length===0) {
+                person.save()
+                .then(result => {
+                    console.log(`lisätään luetteloon henkilö ${person.name} numerolla ${person.number}`)
+                })
+                .catch(error => {
+                    console.log(error)
+                })        
+                res.json(person)  
+            } else {
+                console.log("duplikaatti koitettiin lisätä")
+                res.status(400).json({error: 'Name must be unique'})
+            }
+        })
+    
+      
 })
 
 const PORT = process.env.PORT || 3001
