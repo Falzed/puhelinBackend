@@ -71,14 +71,20 @@ app.get('/info', (req, res) => {
 })
 
 app.get('/api/persons/:id', (req, res) => {
-    const id = Number(req.params.id)
-    const person = persons.find(person => person.id === id)
 
-    if (person) {
-        res.json(person)
-    } else {
-        res.status(404).end()
-    }
+    Person
+        .findById(req.params.id)
+        .then(person => {
+            if(person) {
+                res.json(Person.format(person))
+            } else {
+                res.status(404).end()
+            }
+        })
+        .catch(error => {
+            console.log(error)
+            res.status(400).send({ error: 'malformatted id' })
+        })
 })
 
 app.delete('/api/persons/:id', (req, res) => {
@@ -97,14 +103,27 @@ const generateId = () => {
     return Math.floor(Math.random()*(Math.pow(2,32)-1))
 }
 
-const onkoJoLuettelossa = (name) => {
-    /* console.log(persons.find(person => person.name===name)) */
-    return (persons.find(person => person.name===name)!==undefined)
-}
+ const onkoJoLuettelossa = (name) => {
+    Person.find(person=> {
+        person.name===name
+    })  
+    .then(result => {
+        console.log(result)
+        console.log(result !== undefined)
+        return result !== undefined
+    })
+    .catch(error => {
+        console.log(error)
+    })  
+} 
 
 app.post('/api/persons', (req, res) => {
     const body = req.body
 
+    const person = new Person({
+        name: body.name,
+        number: body.number
+    })
 
     if(body.name===undefined) {
         return res.status(400).json({error: 'Name required'})
@@ -112,15 +131,11 @@ app.post('/api/persons', (req, res) => {
     if(body.number===undefined) {
         return res.status(400).json({error: 'Number required'})
     }
-    /* if(onkoJoLuettelossa(body.name)) {
-        return res.status(400).json({error: 'Name must be unique'})
-    } */
-    const person = new Person({
-        name: body.name,
-        number: body.number
-    })
-
-    person.save()
+    if(onkoJoLuettelossa(body.name)) {
+        Person.findOneAndUpdate({name: body.name}, person,
+             {number: person.number})
+    } else {
+        person.save()
         .then(result => {
             console.log(`lisätään luetteloon henkilö ${person.name} numerolla ${person.number}`)
         })
@@ -128,7 +143,8 @@ app.post('/api/persons', (req, res) => {
             console.log(error)
         })
 
-    res.json(person)
+        res.json(person)
+    }       
 })
 
 const PORT = process.env.PORT || 3001
