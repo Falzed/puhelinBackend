@@ -3,17 +3,7 @@ const app = express()
 const bodyParser = require('body-parser')
 const morgan = require('morgan')
 const cors = require('cors')
-const mongoose = require('mongoose')
-const fs = require('fs')
-
-const password = fs.readFileSync('password.config').toString().replace('\n', '')
-const username = fs.readFileSync('username.config').toString().replace('\n', '')
-
-const url =
-    "mongodb://".concat(username).concat(":").concat(password)
-    .concat("@ds129428.mlab.com:29428/fs-3-db") 
-
-mongoose.connect(url)
+const Person = require('./models/person')
 
 morgan.token('url', (req, res) => {
     return JSON.stringify(req.body)
@@ -24,7 +14,7 @@ app.use(morgan('tiny'))
 /* app.use(cors) */
 app.use(express.static('build'))
 
-let persons = [
+/*let persons = [
     {
         "name": "Arto Hellas",
         "number": "040-123456",
@@ -45,19 +35,32 @@ let persons = [
         "number": "040-123456",
         "id": 4
     }
-]
+] */
+
+const formatPerson = (person) => {
+    return {
+        name: person.name,
+        number: person.number,
+        id: person._id
+    }
+}
 
 app.get('/api/persons', (req, res) => {
-    res.json(persons)
+    Person.find({})    
+    .then(result => {
+        res.json(result.map(formatPerson))
+    })    
 })
 
 app.get('/info', (req, res) => {
     const paivays = new Date()
-    const hlomaara = persons.length
-    res.send(`<div>
-    <p>Puhelinluettelossa on ${hlomaara} henkilön tiedot</p>
-    ${paivays}
-    </div>`)
+    Person.find({})    
+    .then(result => {
+        res.send(`<div>
+        <p>Puhelinluettelossa on ${result.length} henkilön tiedot</p>
+        ${paivays}
+        </div>`)
+    })    
 })
 
 app.get('/api/persons/:id', (req, res) => {
