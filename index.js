@@ -37,37 +37,29 @@ app.use(express.static('build'))
     }
 ] */
 
-const formatPerson = (person) => {
-    return {
-        name: person.name,
-        number: person.number,
-        id: person._id
-    }
-}
-
 app.get('/api/persons', (req, res) => {
-    Person.find({})    
-    .then(result => {
-        res.json(result.map(Person.format))
-    })
-    .catch(error => {
-        console.log(error)
-        res.status(404).end()
-    })  
+    Person.find({})
+        .then(result => {
+            res.json(result.map(Person.format))
+        })
+        .catch(error => {
+            console.log(error)
+            res.status(404).end()
+        })
 })
 
 app.get('/info', (req, res) => {
     const paivays = new Date()
-    Person.find({})    
-    .then(result => {
-        res.send(`<div>
+    Person.find({})
+        .then(result => {
+            res.send(`<div>
         <p>Puhelinluettelossa on ${result.length} henkilön tiedot</p>
         ${paivays}
         </div>`)
-    }).catch(error => {
-        console.log(error)
-        res.status(404).end()
-    })
+        }).catch(error => {
+            console.log(error)
+            res.status(404).end()
+        })
 })
 
 app.get('/api/persons/:id', (req, res) => {
@@ -75,7 +67,7 @@ app.get('/api/persons/:id', (req, res) => {
     Person
         .findById(req.params.id)
         .then(person => {
-            if(person) {
+            if (person) {
                 res.json(Person.format(person))
             } else {
                 res.status(404).end()
@@ -90,37 +82,37 @@ app.get('/api/persons/:id', (req, res) => {
 app.delete('/api/persons/:id', (req, res) => {
 
     Person.findByIdAndRemove(req.params.id)
-    .then(result => {
-        res.status(204).end()
-    })
-    .catch(error => {
-        console.log(error)
-        res.status(400).end()
-    }) 
+        .then(result => {
+            res.status(204).end()
+        })
+        .catch(error => {
+            console.log(error)
+            res.status(400).end()
+        })
 })
 
-const generateId = () => {
-    return Math.floor(Math.random()*(Math.pow(2,32)-1))
-}
+/* const generateId = () => {
+    return Math.floor(Math.random() * (Math.pow(2, 32) - 1))
+} */
 
- const onkoJoLuettelossa = (name) => {
-    Person.find(person=> {
-        person.name===name
-    })  
-    .then(result => {
-        console.log(result)
-        console.log(result !== undefined)
-        return result !== undefined
+/* const onkoJoLuettelossa = (name) => {
+    Person.find(person => {
+        person.name === name
     })
-    .catch(error => {
-        console.log(error)
-    })  
-} 
+        .then(result => {
+            console.log(result)
+            console.log(result !== undefined)
+            return result !== undefined
+        })
+        .catch(error => {
+            console.log(error)
+        })
+} */
 
-app.put('/api/persons/:id', (req,res) => {
-    Person.findOneAndUpdate({name: body.name}, person,
-        {number: person.number})
-        .then(()=>{
+app.put('/api/persons/:id', (req, res) => {
+    Person.findOneAndUpdate({ name: body.name }, person,
+        { number: person.number })
+        .then(() => {
             console.log("findOneAndUpdate.then")
             res.status(200).end()
         })
@@ -138,37 +130,37 @@ app.post('/api/persons', (req, res) => {
         number: body.number
     })
 
-    if(body.name===undefined) {
-        return res.status(400).json({error: 'Name required'})
+    if (body.name === undefined) {
+        return res.status(400).json({ error: 'Name required' })
     }
-    if(body.number===undefined) {
-        return res.status(400).json({error: 'Number required'})
+    if (body.number === undefined) {
+        return res.status(400).json({ error: 'Number required' })
     }
 
     Person
-        .find({name: body.name})
+        .find({ name: body.name })
         .then(result => {
             console.log(result.length)
-            console.log(result.length===0)
-            if(result.length===0) {
+            console.log(result.length === 0)
+            if (result.length === 0) {
                 person.save()
-                .then(result => {
-                    console.log(`lisätään luetteloon henkilö ${person.name} numerolla ${person.number}`)
-                })
-                .catch(error => {
-                    console.log(error)
-                })        
-                res.json(person)  
+                    .then(() => {
+                        console.log(`lisätään luetteloon henkilö ${person.name} numerolla ${person.number}`)
+                    })
+                    .catch(error => {
+                        console.log(error)
+                    })
+                res.json(person)
             } else {
-                console.log("duplikaatti koitettiin lisätä")
-                res.status(400).json({error: 'Name must be unique'})
+                console.log('duplikaatti koitettiin lisätä')
+                res.status(400).json({ error: 'Name must be unique' })
             }
         })
-    
-      
+
+
 })
 
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`)
+    console.log(`Server running on port ${PORT}`)
 })
