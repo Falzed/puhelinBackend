@@ -99,15 +99,18 @@ app.post('/api/persons', (req, res) => {
     if(body.number===undefined) {
         return res.status(400).json({error: 'Number required'})
     }
-    if(onkoJoLuettelossa(body.name)) {
+    /* if(onkoJoLuettelossa(body.name)) {
         return res.status(400).json({error: 'Name must be unique'})
-    }
-    const person = {
+    } */
+    const person = new Person({
         name: body.name,
-        number: body.number,
-        id: generateId()
-    }
-    persons = persons.concat(person)
+        number: body.number
+    })
+
+    person.save()
+        .then(result => {
+            console.log(`lisätään luetteloon henkilö ${person.name} numerolla ${person.number}`)
+        })
 
     res.json(person)
 })
