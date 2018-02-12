@@ -113,7 +113,7 @@ app.put('/api/persons/:id', (req, res) => {
     Person.findOneAndUpdate({ name: body.name }, person,
         { number: person.number })
         .then(() => {
-            console.log("findOneAndUpdate.then")
+            console.log('findOneAndUpdate.then')
             res.status(200).end()
         })
         .catch(error => {
