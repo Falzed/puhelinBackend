@@ -120,6 +120,14 @@ const generateId = () => {
 app.put('/api/persons/:id', (req,res) => {
     Person.findOneAndUpdate({name: body.name}, person,
         {number: person.number})
+        .then(()=>{
+            console.log("findOneAndUpdate.then")
+            res.status(200).end()
+        })
+        .catch(error => {
+            console.log(asdf)
+            console.log(error)
+        })
 })
 
 app.post('/api/persons', (req, res) => {
